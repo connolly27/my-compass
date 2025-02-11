@@ -1,8 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧭 Personal Compass App
+
+A simple tool to help you maintain direction and focus in your personal development journey. This app provides a structured way to reflect on your priorities, track your progress, and maintain accountability through physical reminders.
+
+## Features
+
+### Priority Cards
+
+- Choose up to 3 priority cards from a deck of 7 predefined options
+- Designate one card as your top priority
+- Easily modify your selections as your priorities shift
+
+### Virtue Pyramid
+
+- Visual representation of your virtue hierarchy
+- Interactive display at the bottom of the app
+
+### Progress Tracking
+
+- Calendar system with adjustable sliders to mark your last check-in
+- Physical accountability checkbox for marking when you've written and placed a physical reminder
+- Track your journey through time with simple date markers
+
+### Personal Notes
+
+- Space for 1-2 brief notes to yourself
+- Character-limited to encourage concise, focused thoughts
+- ⚠️ **Important**: Notes are stored locally and are not backed up. Keep them brief and meaningful!
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +54,37 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Data Storage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This app uses localStorage for all data storage, meaning:
 
-## Learn More
+- Your data stays in your browser
+- No server-side storage or backup
+- Data persists between sessions but can be lost if you clear your browser data
+- Different browsers/devices will have separate data
 
-To learn more about Next.js, take a look at the following resources:
+## Development Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Built with:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js 14+
+- TypeScript
+- Tailwind CSS
+- ESLint for code quality
 
-## Deploy on Vercel
+Standard Next.js project structure without src directory or path aliases.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## For Students
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This app is designed to be simple and focused. Some tips for best use:
+
+- Set aside regular time to check in with your compass
+- Actually write down your priorities when prompted
+- Place your written reminders where you'll naturally encounter them
+- Don't rely solely on the digital interface - the physical component is key to making this work
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
