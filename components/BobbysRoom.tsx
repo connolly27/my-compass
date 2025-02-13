@@ -114,8 +114,8 @@ const BobbysRoom: React.FC = () => {
         {/* Grid Layout */}
         <div className="grid gap-4 h-[1000px]">
           {/* Calendar Slider - Full width always */}
-          <div className="col-span-full">
-            <ConstructionPaper color="#E6B5A6" className="h-full overflow-visible flex items-center justify-center">
+          <div className="col-span-full overflow-hidden">
+            <ConstructionPaper color="#E6B5A6" className="h-full overflow-hidden flex items-center justify-center">
               <CalendarSlider />
             </ConstructionPaper>
           </div>

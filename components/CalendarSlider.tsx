@@ -23,10 +23,7 @@ const CalendarSlider = () => {
     { type: "day", width: 3698, height: 190, y: 284, displayHeight: 38 },
   ];
 
-  // Calculate maximum drag distance based on slider width
   const getMaxDragDistance = (sliderWidth: number) => {
-    // The maximum distance should be half of (total width - visible width)
-    // We divide by 2 because the slider is centered (translateX(-50%))
     return (sliderWidth - visibleSliderWidth) / 12;
   };
 
@@ -34,20 +31,20 @@ const CalendarSlider = () => {
     sliderConfigs.map((config) => [config.type, { y: `${(config.y / chassisHeight) * 100}%` }])
   );
 
-  const handleMouseDown = (e: React.MouseEvent, type: SliderType) => {
+  const handleStart = (clientX: number, type: SliderType) => {
     setIsDragging(type);
-    dragStartX.current = e.clientX;
-    currentOffset.current = sliderOffsets[type as keyof typeof sliderOffsets];
+    dragStartX.current = clientX;
+    currentOffset.current = sliderOffsets[type];
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMove = (clientX: number) => {
     if (!isDragging) return;
 
     const config = sliderConfigs.find((c) => c.type === isDragging);
     if (!config) return;
 
     const maxDistance = getMaxDragDistance(config.width);
-    const deltaX = e.clientX - dragStartX.current;
+    const deltaX = clientX - dragStartX.current;
     const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
 
     setSliderOffsets((prev) => ({
@@ -56,18 +53,46 @@ const CalendarSlider = () => {
     }));
   };
 
-  const handleMouseUp = () => {
+  const handleEnd = () => {
     setIsDragging(null);
+  };
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent, type: SliderType) => {
+    e.preventDefault();
+    handleStart(e.clientX, type);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleMove(e.clientX);
+  };
+
+  // Touch events
+  const handleTouchStart = (e: React.TouchEvent, type: SliderType) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleStart(touch.clientX, type);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleMove(touch.clientX);
   };
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener("mouseup", handleMouseUp);
-      document.addEventListener("mouseleave", handleMouseUp);
+      document.addEventListener("mouseup", handleEnd);
+      document.addEventListener("mouseleave", handleEnd);
+      document.addEventListener("touchend", handleEnd);
+      document.addEventListener("touchcancel", handleEnd);
     }
     return () => {
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("mouseleave", handleMouseUp);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("mouseleave", handleEnd);
+      document.removeEventListener("touchend", handleEnd);
+      document.removeEventListener("touchcancel", handleEnd);
     };
   }, [isDragging]);
 
@@ -80,6 +105,7 @@ const CalendarSlider = () => {
         margin: "0 auto",
       }}
       onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
     >
       {/* Chassis */}
       <div className="absolute left-1/2" style={{ width: "77px", transform: "translateX(-50%)" }}>
@@ -97,7 +123,7 @@ const CalendarSlider = () => {
       {sliderConfigs.map((config) => (
         <div
           key={config.type}
-          className="absolute left-1/2 cursor-grab active:cursor-grabbing"
+          className="absolute left-1/2 cursor-grab active:cursor-grabbing touch-none"
           style={{
             top: sliderPositions[config.type].y,
             width: "750px",
@@ -106,6 +132,7 @@ const CalendarSlider = () => {
             userSelect: "none",
           }}
           onMouseDown={(e) => handleMouseDown(e, config.type)}
+          onTouchStart={(e) => handleTouchStart(e, config.type)}
         >
           <Image
             src={`/images/slider${sliderConfigs.findIndex((c) => c.type === config.type) + 1}.png`}
