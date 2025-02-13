@@ -12,10 +12,11 @@ const CalendarSlider = () => {
   });
   const dragStartX = useRef(0);
   const currentOffset = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const chassisWidth = 77;
   const chassisHeight = 470;
-  const visibleSliderWidth = 100; // Width of the visible slider area
+  const visibleSliderWidth = 100;
 
   const sliderConfigs: Array<{ type: SliderType; width: number; height: number; y: number; displayHeight: number }> = [
     { type: "weekday", width: 3692, height: 200, y: 145, displayHeight: 40 },
@@ -70,25 +71,39 @@ const CalendarSlider = () => {
 
   // Touch events
   const handleTouchStart = (e: React.TouchEvent, type: SliderType) => {
-    e.preventDefault();
     const touch = e.touches[0];
     handleStart(touch.clientX, type);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault();
+    if (!isDragging) return;
     const touch = e.touches[0];
     handleMove(touch.clientX);
   };
 
   useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    };
+
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      currentContainer.addEventListener("wheel", handleWheel, { passive: false });
+    }
+
     if (isDragging) {
       document.addEventListener("mouseup", handleEnd);
       document.addEventListener("mouseleave", handleEnd);
       document.addEventListener("touchend", handleEnd);
       document.addEventListener("touchcancel", handleEnd);
     }
+
     return () => {
+      if (currentContainer) {
+        currentContainer.removeEventListener("wheel", handleWheel);
+      }
       document.removeEventListener("mouseup", handleEnd);
       document.removeEventListener("mouseleave", handleEnd);
       document.removeEventListener("touchend", handleEnd);
@@ -98,7 +113,8 @@ const CalendarSlider = () => {
 
   return (
     <div
-      className="relative overflow-visible"
+      ref={containerRef}
+      className="relative overflow-visible touch-pan-y"
       style={{
         height: "470px",
         width: "77px",
@@ -123,13 +139,13 @@ const CalendarSlider = () => {
       {sliderConfigs.map((config) => (
         <div
           key={config.type}
-          className="absolute left-1/2 cursor-grab active:cursor-grabbing touch-none"
+          className="absolute left-1/2 cursor-grab active:cursor-grabbing touch-pan-x select-none"
           style={{
             top: sliderPositions[config.type].y,
             width: "750px",
             height: `${config.displayHeight}px`,
             transform: `translateX(calc(-50% + ${sliderOffsets[config.type]}px))`,
-            userSelect: "none",
+            touchAction: "pan-x",
           }}
           onMouseDown={(e) => handleMouseDown(e, config.type)}
           onTouchStart={(e) => handleTouchStart(e, config.type)}
@@ -139,7 +155,7 @@ const CalendarSlider = () => {
             alt={`${config.type} slider`}
             width={config.width}
             height={config.height}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover pointer-events-none"
             draggable={false}
           />
         </div>
@@ -152,7 +168,7 @@ const CalendarSlider = () => {
           alt="Slider diamonds"
           width={chassisWidth}
           height={chassisHeight}
-          className="w-full h-auto"
+          className="w-full h-auto pointer-events-none"
           priority
         />
       </div>
