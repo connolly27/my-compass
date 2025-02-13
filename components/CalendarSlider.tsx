@@ -1,17 +1,7 @@
 import Image from "next/image";
-import { CSSProperties, useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
-interface SliderPosition {
-  x: number;
-  y: number;
-}
-
-interface CalendarSliderProps {
-  className?: string;
-  style?: CSSProperties;
-}
-
-const CalendarSlider = ({ className, style }: CalendarSliderProps) => {
+const CalendarSlider = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isDragging, setIsDragging] = useState<string | null>(null);
@@ -44,9 +34,9 @@ const CalendarSlider = ({ className, style }: CalendarSliderProps) => {
 
   // Calculate relative positions
   const sliderPositions = {
-    weekday: { y: `${(580 / chassisHeight) * 100}%` },
-    month: { y: `${(860 / chassisHeight) * 100}%` },
-    day: { y: `${(1135 / chassisHeight) * 100}%` },
+    weekday: { y: `${(581 / chassisHeight) * 100}%` },
+    month: { y: `${(859 / chassisHeight) * 100}%` },
+    day: { y: `${(1137 / chassisHeight) * 100}%` },
   };
 
   const handleMouseDown = (e: React.MouseEvent, type: string) => {

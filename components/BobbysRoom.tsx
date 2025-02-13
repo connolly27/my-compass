@@ -1,5 +1,4 @@
 import React, { useId, useEffect, useState } from "react";
-
 import CalendarSlider from "./CalendarSlider";
 
 interface ConstructionPaperProps {
@@ -9,21 +8,28 @@ interface ConstructionPaperProps {
 }
 
 const ConstructionPaper = ({ color, className, children }: ConstructionPaperProps) => {
-  // Generate stable IDs for server/client matching
   const stableId = useId();
 
-  // State for random seeds, initialized after hydration
   const [seeds, setSeeds] = useState({
-    textureSeed: 1, // Default seed for initial render
-    edgeSeed: 1, // Default seed for initial render
+    textureSeed: 1,
+    edgeSeed: 1,
   });
 
-  // Update seeds after initial render (client-side only)
   useEffect(() => {
+    // Initial update
     setSeeds({
-      textureSeed: Math.floor(Math.random() * 100),
-      edgeSeed: Math.floor(Math.random() * 100),
+      textureSeed: Math.random() * 1000,
+      edgeSeed: Math.random() * 1000,
     });
+
+    const intervalId = setInterval(() => {
+      setSeeds(() => ({
+        textureSeed: Math.random() * 1000,
+        edgeSeed: Math.random() * 1000,
+      }));
+    }, 7777);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const textureId = `paper-texture-${stableId}`;
@@ -31,12 +37,16 @@ const ConstructionPaper = ({ color, className, children }: ConstructionPaperProp
 
   return (
     <div className={`relative ${className}`}>
-      <svg viewBox="0 0 300 200" className="w-full h-full absolute">
+      <svg
+        viewBox="0 0 300 200"
+        className="w-full h-full absolute"
+        key={`${seeds.textureSeed}-${seeds.edgeSeed}`} // Force rerender
+      >
         <filter id={textureId}>
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.9"
-            numOctaves="3"
+            baseFrequency="1.2"
+            numOctaves="4"
             seed={seeds.textureSeed}
             stitchTiles="stitch"
           />
@@ -45,11 +55,10 @@ const ConstructionPaper = ({ color, className, children }: ConstructionPaperProp
         </filter>
 
         <filter id={edgeId}>
-          <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="5" seed={seeds.edgeSeed} />
-          <feDisplacementMap in="SourceGraphic" scale="3" />
+          <feTurbulence type="turbulence" baseFrequency="0.08" numOctaves="6" seed={seeds.edgeSeed} />
+          <feDisplacementMap in="SourceGraphic" scale="4" />
         </filter>
 
-        {/* Base shape with border */}
         <rect
           x="19"
           y="19"
@@ -63,8 +72,15 @@ const ConstructionPaper = ({ color, className, children }: ConstructionPaperProp
           opacity="0.95"
         />
 
-        {/* Texture overlay */}
-        <rect x="19" y="19" width="262" height="162" fill={color} filter={`url(#${textureId})`} opacity="0.1" />
+        <rect
+          x="19"
+          y="19"
+          width="262"
+          height="162"
+          fill={color}
+          filter={`url(#${textureId})`}
+          opacity="0.15" // Increased opacity
+        />
       </svg>
       <div className="relative z-10">{children}</div>
     </div>
@@ -93,9 +109,7 @@ const StuccoBackground = () => (
   </div>
 );
 
-interface BobbysRoomProps {}
-
-const BobbysRoom: React.FC<BobbysRoomProps> = ({}) => {
+const BobbysRoom: React.FC = () => {
   return (
     <div className="min-h-screen p-4">
       {/* Stucco Background */}
@@ -104,7 +118,7 @@ const BobbysRoom: React.FC<BobbysRoomProps> = ({}) => {
       {/* Main Content */}
       <div className="max-w-[1400px] mx-auto space-y-4">
         {/* Heading */}
-        <h1 className="text-6xl text-center mb-8 text-slate-800">Bobby's Room</h1>
+        <h1 className="text-6xl text-center mb-8 text-slate-800">Bobby&apos;s Room</h1>
 
         {/* Grid Layout */}
         <div className="grid grid-cols-2 gap-4 h-[1000px]">
