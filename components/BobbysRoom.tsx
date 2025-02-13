@@ -1,5 +1,7 @@
 import React, { useId, useEffect, useState } from "react";
 
+import CalendarSlider from "./CalendarSlider";
+
 interface ConstructionPaperProps {
   color: string;
   className?: string;
@@ -113,8 +115,8 @@ const BobbysRoom: React.FC<BobbysRoomProps> = ({}) => {
             </ConstructionPaper>
           </div>
           <div className="col-span-1">
-            <ConstructionPaper color="#E6B5A6" className="h-full">
-              {<div></div>}
+            <ConstructionPaper color="#E6B5A6" className="h-full overflow-visible">
+              <CalendarSlider />
             </ConstructionPaper>
           </div>
 
