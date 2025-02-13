@@ -21,15 +21,6 @@ const ConstructionPaper = ({ color, className, children }: ConstructionPaperProp
       textureSeed: Math.random() * 1000,
       edgeSeed: Math.random() * 1000,
     });
-
-    const intervalId = setInterval(() => {
-      setSeeds(() => ({
-        textureSeed: Math.random() * 1000,
-        edgeSeed: Math.random() * 1000,
-      }));
-    }, 7777);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   const textureId = `paper-texture-${stableId}`;
@@ -124,7 +115,7 @@ const BobbysRoom: React.FC = () => {
         <div className="grid gap-4 h-[1000px]">
           {/* Calendar Slider - Full width always */}
           <div className="col-span-full">
-            <ConstructionPaper color="#E6B5A6" className="h-full overflow-visible">
+            <ConstructionPaper color="#E6B5A6" className="h-full overflow-visible flex items-center justify-center">
               <CalendarSlider />
             </ConstructionPaper>
           </div>
