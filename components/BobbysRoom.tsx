@@ -121,28 +121,31 @@ const BobbysRoom: React.FC = () => {
         <h1 className="text-6xl text-center mb-8 text-slate-800">Bobby&apos;s Room</h1>
 
         {/* Grid Layout */}
-        <div className="grid grid-cols-2 gap-4 h-[1000px]">
-          {/* Top Row Cards */}
-          <div className="col-span-1">
-            <ConstructionPaper color="#B8C5A6" className="h-full">
-              {<div></div>}
-            </ConstructionPaper>
-          </div>
-          <div className="col-span-1">
+        <div className="grid gap-4 h-[1000px]">
+          {/* Calendar Slider - Full width always */}
+          <div className="col-span-full">
             <ConstructionPaper color="#E6B5A6" className="h-full overflow-visible">
               <CalendarSlider />
             </ConstructionPaper>
           </div>
 
-          {/* Middle Large Card */}
-          <div className="col-span-2">
-            <ConstructionPaper color="#D5C5D9" className="h-full">
-              {<div></div>}
-            </ConstructionPaper>
+          {/* Two column grid for the rest */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Middle Cards - Stack on mobile, side by side on desktop */}
+            <div className="col-span-1">
+              <ConstructionPaper color="#B8C5A6" className="h-full">
+                {<div></div>}
+              </ConstructionPaper>
+            </div>
+            <div className="col-span-1">
+              <ConstructionPaper color="#D5C5D9" className="h-full">
+                {<div></div>}
+              </ConstructionPaper>
+            </div>
           </div>
 
-          {/* Bottom Large Card */}
-          <div className="col-span-2">
+          {/* Bottom Card - Full width always */}
+          <div className="col-span-full">
             <ConstructionPaper color="#B5D4C5" className="h-full">
               {<div></div>}
             </ConstructionPaper>

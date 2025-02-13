@@ -26,17 +26,17 @@ const CalendarSlider = () => {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // Base dimensions
-  const chassisWidth = 310;
-  const chassisHeight = 1880;
+  // Base dimensions (scaled down to 25% of original)
+  const chassisWidth = 77;
+  const chassisHeight = 470;
   const aspectRatio = chassisHeight / chassisWidth;
   const maxDragDistance = containerWidth * 0.5; // 50% of container width
 
   // Calculate relative positions
   const sliderPositions = {
-    weekday: { y: `${(581 / chassisHeight) * 100}%` },
-    month: { y: `${(859 / chassisHeight) * 100}%` },
-    day: { y: `${(1137 / chassisHeight) * 100}%` },
+    weekday: { y: `${(581 / chassisHeight) * 25}%` },
+    month: { y: `${(859 / chassisHeight) * 25}%` },
+    day: { y: `${(1137 / chassisHeight) * 25}%` },
   };
 
   const handleMouseDown = (e: React.MouseEvent, type: string) => {
@@ -77,13 +77,14 @@ const CalendarSlider = () => {
       ref={containerRef}
       className="relative overflow-visible"
       style={{
-        height: 0,
-        paddingBottom: `${aspectRatio * 14}%`,
+        height: "470px",
+        width: "77px",
+        margin: "0 auto",
       }}
       onMouseMove={handleMouseMove}
     >
       {/* Chassis */}
-      <div className="absolute right-0" style={{ width: `${14}%` }}>
+      <div className="absolute left-1/2" style={{ width: "77px", transform: "translateX(-50%)" }}>
         <Image
           src="/images/chassis.png"
           alt="Slider chassis"
@@ -98,11 +99,11 @@ const CalendarSlider = () => {
       {["weekday", "month", "day"].map((type, index) => (
         <div
           key={type}
-          className="absolute right-[8.5%] cursor-grab active:cursor-grabbing"
+          className="absolute left-1/2 cursor-grab active:cursor-grabbing"
           style={{
             top: sliderPositions[type as keyof typeof sliderPositions].y,
-            width: `${17 * 8.82}%`,
-            transform: `translateX(calc(50% + ${sliderOffsets[type as keyof typeof sliderOffsets]}px))`,
+            width: "650px",
+            transform: `translateX(calc(-50% + ${sliderOffsets[type as keyof typeof sliderOffsets]}px))`,
             userSelect: "none",
           }}
           onMouseDown={(e) => handleMouseDown(e, type)}
@@ -119,7 +120,7 @@ const CalendarSlider = () => {
       ))}
 
       {/* Diamonds overlay */}
-      <div className="absolute right-0" style={{ width: `${14}%` }}>
+      <div className="absolute left-1/2" style={{ width: "77px", transform: "translateX(-50%)" }}>
         <Image
           src="/images/diamonds.png"
           alt="Slider diamonds"
