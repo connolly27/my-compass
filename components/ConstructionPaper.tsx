@@ -4,12 +4,23 @@ interface ConstructionPaperProps {
   color: string;
   className?: string;
   children: React.ReactNode;
+  height?: number | string;
+  width?: number | string;
+  minHeight?: number | string;
+  maxHeight?: number | string;
 }
 
-const ConstructionPaper = ({ color, className, children }: ConstructionPaperProps) => {
+const ConstructionPaper = ({
+  color,
+  className = "",
+  children,
+  height,
+  width,
+  minHeight,
+  maxHeight,
+}: ConstructionPaperProps) => {
   const stableId = useId();
   const [isMobile, setIsMobile] = useState(false);
-
   const [seeds, setSeeds] = useState({
     textureSeed: 1,
     edgeSeed: 1,
@@ -40,10 +51,8 @@ const ConstructionPaper = ({ color, className, children }: ConstructionPaperProp
   const textureId = `paper-texture-${stableId}`;
   const edgeId = `rough-edge-${stableId}`;
 
-  // Adjust viewBox based on screen size
   const viewBox = isMobile ? "0 0 200 300" : "0 0 300 200";
 
-  // Adjust rectangle dimensions based on screen size
   const rectDimensions = isMobile
     ? {
         x: "19",
@@ -58,9 +67,21 @@ const ConstructionPaper = ({ color, className, children }: ConstructionPaperProp
         height: "162",
       };
 
+  const containerStyle: React.CSSProperties = {
+    height,
+    width,
+    minHeight,
+    maxHeight,
+  };
+
   return (
-    <div className={`relative ${className}`}>
-      <svg viewBox={viewBox} className="w-full h-full absolute" key={`${seeds.textureSeed}-${seeds.edgeSeed}`}>
+    <div className={`relative ${className}`} style={containerStyle}>
+      <svg
+        viewBox={viewBox}
+        className="w-full h-full absolute"
+        preserveAspectRatio="none"
+        key={`${seeds.textureSeed}-${seeds.edgeSeed}`}
+      >
         <filter id={textureId}>
           <feTurbulence
             type="fractalNoise"

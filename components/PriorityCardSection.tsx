@@ -19,11 +19,11 @@ const priorityCards = [
 const PriorityCardSection: React.FC = () => {
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
-      {/* Mobile Layout (6 rows: 1-2-2-2-2-3) */}
+      {/* Mobile Layout  */}
       <div className="md:hidden">
-        {[0, 2, 4, 6, 8, 10].map((startIdx) => (
+        {[0, 1, 2, 3, 4, 5].map((startIdx) => (
           <div key={startIdx} className="flex justify-center gap-6 mb-4">
-            {priorityCards.slice(startIdx, startIdx + 2).map((card, idx) => (
+            {[priorityCards[startIdx + 6], priorityCards[startIdx]].map((card, idx) => (
               <PriorityCard
                 key={idx}
                 imagePath={card.imagePath}
