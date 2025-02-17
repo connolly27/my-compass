@@ -7,9 +7,17 @@ interface PriorityCardProps {
   isSelected: boolean;
   queuePosition: number | null;
   onClick: () => void;
+  priority?: boolean; // New prop for image loading priority
 }
 
-const PriorityCard: React.FC<PriorityCardProps> = ({ imagePath, label, isSelected, queuePosition, onClick }) => {
+const PriorityCard: React.FC<PriorityCardProps> = ({
+  imagePath,
+  label,
+  isSelected,
+  queuePosition,
+  onClick,
+  priority = false, // Default to false if not provided
+}) => {
   // Get priority-specific styles
   const getPriorityStyles = (position: number | null) => {
     if (position === null) return "";
@@ -68,7 +76,14 @@ const PriorityCard: React.FC<PriorityCardProps> = ({ imagePath, label, isSelecte
             {queuePosition + 1}
           </div>
         )}
-        <Image src={imagePath} alt={label} width={64} height={64} className="w-16 h-16 object-contain" />
+        <Image
+          src={imagePath}
+          alt={label}
+          width={64}
+          height={64}
+          className="w-16 h-16 object-contain"
+          priority={priority}
+        />
       </div>
       <span
         className={`

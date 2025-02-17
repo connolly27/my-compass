@@ -9,9 +9,21 @@ const defaultOffsets = {
   day: 0,
 };
 
-const CalendarSlider = () => {
-  type SliderType = "weekday" | "month" | "day";
+const sliderConfigs: Array<{
+  type: SliderType;
+  width: number;
+  height: number;
+  y: number;
+  displayHeight: number;
+}> = [
+  { type: "weekday", width: 3692, height: 200, y: 145, displayHeight: 40 },
+  { type: "month", width: 3692, height: 194, y: 213, displayHeight: 39 },
+  { type: "day", width: 3698, height: 190, y: 284, displayHeight: 38 },
+];
 
+type SliderType = "weekday" | "month" | "day";
+
+const CalendarSlider = () => {
   const [isDragging, setIsDragging] = useState<SliderType | null>(null);
   const [sliderOffsets, setSliderOffsets] = useState(defaultOffsets);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -32,12 +44,6 @@ const CalendarSlider = () => {
   const chassisWidth = 77;
   const chassisHeight = 470;
   const visibleSliderWidth = 100;
-
-  const sliderConfigs: Array<{ type: SliderType; width: number; height: number; y: number; displayHeight: number }> = [
-    { type: "weekday", width: 3692, height: 200, y: 145, displayHeight: 40 },
-    { type: "month", width: 3692, height: 194, y: 213, displayHeight: 39 },
-    { type: "day", width: 3698, height: 190, y: 284, displayHeight: 38 },
-  ];
 
   const getMaxDragDistance = (sliderWidth: number) => {
     return (sliderWidth - visibleSliderWidth) / 12;
@@ -61,22 +67,6 @@ const CalendarSlider = () => {
     currentOffset.current = sliderOffsets[type];
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
-
-    const config = sliderConfigs.find((c) => c.type === isDragging);
-    if (!config) return;
-
-    const maxDistance = getMaxDragDistance(config.width);
-    const deltaX = e.clientX - dragStartX.current;
-    const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
-
-    setSliderOffsets((prev) => ({
-      ...prev,
-      [isDragging]: newOffset,
-    }));
-  };
-
   const handleMouseUp = () => {
     setIsDragging(null);
   };
@@ -84,14 +74,28 @@ const CalendarSlider = () => {
   // Add and remove document-level event listeners
   useEffect(() => {
     if (isDragging) {
+      const handleMouseMove = (e: MouseEvent) => {
+        const config = sliderConfigs.find((c) => c.type === isDragging);
+        if (!config) return;
+
+        const maxDistance = getMaxDragDistance(config.width);
+        const deltaX = e.clientX - dragStartX.current;
+        const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
+
+        setSliderOffsets((prev) => ({
+          ...prev,
+          [isDragging]: newOffset,
+        }));
+      };
+
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
-    }
 
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
   }, [isDragging]);
 
   if (!isHydrated) {

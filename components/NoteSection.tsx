@@ -64,6 +64,14 @@ const NoteSection = () => {
           focus:ring-blue-400 resize-none font-serif text-lg leading-relaxed
           ${isMobile ? "min-h-[200px]" : ""}`}
         style={{ fontFamily: "Times New Roman, serif" }}
+        autoFocus
+        onFocus={(e) => {
+          // Move cursor to end of text
+          const textarea = e.target;
+          setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+          }, 0);
+        }}
       />
       <div
         className={`text-sm text-right ${tempNote.length > MAX_CHARS ? "text-red-500 font-medium" : "text-slate-500"}`}

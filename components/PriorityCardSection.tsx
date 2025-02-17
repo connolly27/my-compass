@@ -1,4 +1,3 @@
-// PriorityCardSection.tsx
 import React, { useState, useEffect } from "react";
 import PriorityCard from "./PriorityCard";
 
@@ -17,7 +16,11 @@ const priorityCards = [
   { imagePath: "/images/broom.png", label: "Cleaning" },
   { imagePath: "/images/standing_mirror.png", label: "Reflection" },
   { imagePath: "/images/projects.png", label: "Projects" },
-];
+].map((card, index) => ({
+  ...card,
+  // Add priority to the first 6 cards that appear above the fold
+  priority: index < 6,
+}));
 
 const PriorityCardSection: React.FC = () => {
   const [priorityQueue, setPriorityQueue] = useState<string[]>([]);
@@ -80,6 +83,7 @@ const PriorityCardSection: React.FC = () => {
                 isSelected={priorityQueue.includes(card.label)}
                 queuePosition={getQueuePosition(card.label)}
                 onClick={() => handleCardClick(card.label)}
+                priority={card.priority}
               />
             ))}
           </div>
@@ -97,6 +101,7 @@ const PriorityCardSection: React.FC = () => {
               isSelected={priorityQueue.includes(card.label)}
               queuePosition={getQueuePosition(card.label)}
               onClick={() => handleCardClick(card.label)}
+              priority={card.priority}
             />
           ))}
         </div>
@@ -109,6 +114,7 @@ const PriorityCardSection: React.FC = () => {
               isSelected={priorityQueue.includes(card.label)}
               queuePosition={getQueuePosition(card.label)}
               onClick={() => handleCardClick(card.label)}
+              priority={card.priority}
             />
           ))}
         </div>

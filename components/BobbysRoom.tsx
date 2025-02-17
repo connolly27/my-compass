@@ -15,11 +15,11 @@ const BobbysRoom: React.FC = () => {
       <div className="max-w-[1400px] mx-auto space-y-2">
         {/* Heading */}
         <div className="px-4">
-          <h1 className="text-6xl text-center mt-4 mb-10 text-slate-800">Bobby&apos;s Room</h1>
+          <h1 className="text-6xl text-center my-10 text-slate-800">Bobby&apos;s Room</h1>
         </div>
 
         {/* Grid Layout */}
-        <div className="grid gap-2">
+        <div className="grid">
           {/* Calendar Slider */}
           <div className="col-span-full overflow-hidden h-[600px]">
             <ConstructionPaper color="#E6B5A6" className="h-full overflow-hidden flex items-center justify-center">
