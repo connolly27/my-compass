@@ -81,7 +81,7 @@ const CalendarSlider = () => {
     setIsDragging(null);
   };
 
-  // Add and remove document-level event listeners for mouse events only
+  // Add and remove document-level event listeners
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -98,8 +98,8 @@ const CalendarSlider = () => {
     return (
       <div
         style={{
-          height: "470px",
-          width: "77px",
+          width: `${chassisWidth}px`,
+          height: `${chassisHeight}px`,
           margin: "0 auto",
         }}
       />
@@ -111,24 +111,23 @@ const CalendarSlider = () => {
       ref={containerRef}
       className="relative overflow-visible touch-pan-y"
       style={{
-        height: "470px",
-        width: "77px",
+        width: `${chassisWidth}px`,
+        height: `${chassisHeight}px`,
         margin: "0 auto",
       }}
     >
       {/* Chassis */}
-      <div
-        className="absolute left-1/2 select-none pointer-events-none"
-        style={{ width: "77px", transform: "translateX(-50%)" }}
-      >
-        <Image
-          src="/images/chassis.png"
-          alt="Slider chassis"
-          width={chassisWidth}
-          height={chassisHeight}
-          className="w-full h-full object-contain"
-          priority
-        />
+      <div className="absolute left-1/2 select-none pointer-events-none w-full h-full -translate-x-1/2">
+        <div className="relative w-full h-full">
+          <Image
+            src="/images/chassis.png"
+            alt="Slider chassis"
+            fill
+            priority
+            sizes={`${chassisWidth}px`}
+            className="object-contain"
+          />
+        </div>
       </div>
 
       {/* Sliders */}
@@ -169,30 +168,32 @@ const CalendarSlider = () => {
             }
           }}
         >
-          <Image
-            src={`/images/slider${sliderConfigs.findIndex((c) => c.type === config.type) + 1}.png`}
-            alt={`${config.type} slider`}
-            width={config.width}
-            height={config.height}
-            className="w-full h-full object-cover pointer-events-none"
-            draggable={false}
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={`/images/slider${sliderConfigs.findIndex((c) => c.type === config.type) + 1}.png`}
+              alt={`${config.type} slider`}
+              fill
+              priority
+              sizes="750px"
+              className="object-cover pointer-events-none"
+              draggable={false}
+            />
+          </div>
         </div>
       ))}
 
       {/* Diamonds overlay */}
-      <div
-        className="absolute left-1/2 select-none pointer-events-none"
-        style={{ width: "77px", transform: "translateX(-50%)" }}
-      >
-        <Image
-          src="/images/diamonds.png"
-          alt="Slider diamonds"
-          width={chassisWidth}
-          height={chassisHeight}
-          className="w-full h-full object-contain"
-          priority
-        />
+      <div className="absolute left-1/2 select-none pointer-events-none w-full h-full -translate-x-1/2">
+        <div className="relative w-full h-full">
+          <Image
+            src="/images/diamonds.png"
+            alt="Slider diamonds"
+            fill
+            priority
+            sizes={`${chassisWidth}px`}
+            className="object-contain"
+          />
+        </div>
       </div>
     </div>
   );

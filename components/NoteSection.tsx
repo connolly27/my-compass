@@ -74,27 +74,25 @@ const NoteSection = () => {
 
   return (
     <div className="col-span-full">
-      <ConstructionPaper color="#E8D8C3" className="min-h-[250px] md:min-h-[300px] p-6">
-        <div className="max-w-2xl mx-auto">
-          <h3 className={`text-4xl text-center text-slate-800 mb-6 ${comicNeue.className}`}>Keep a Note</h3>
+      <ConstructionPaper color="#E8D8C3" className="min-h-[250px] md:min-h-[300px] p-6 pb-12">
+        <div className="max-w-2xl mx-auto pt-8">
+          <h3 className="text-4xl text-center text-slate-800 mt-12 mb-8">Keep a Note</h3>
 
           {note ? (
-            <Alert className="Alert mb-4">
+            <Alert className="Alert mb-6">
               <AlertDescription>
-                <p className="font-serif text-lg leading-relaxed p-2" style={{ fontFamily: "Times New Roman, serif" }}>
-                  {note}
-                </p>
+                <p className="font-['Crimson_Text'] text-lg leading-relaxed p-2">{note}</p>
               </AlertDescription>
             </Alert>
           ) : (
-            <div className="text-center text-slate-600 italic mb-4">No note yet...</div>
+            <div className="text-center text-slate-600 italic mb-6 font-['Crimson_Text']">No note yet...</div>
           )}
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
                 className="mx-auto block px-6 py-2 bg-slate-700 text-white rounded-lg 
-                hover:bg-slate-600 transition-colors duration-200"
+                hover:bg-slate-600 transition-colors duration-200 mb-6"
               >
                 {note ? "Edit Note" : "Add Note"}
               </button>
