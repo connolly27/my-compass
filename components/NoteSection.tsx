@@ -12,7 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { comicNeue } from "../app/fonts";
 
 const NOTE_STORAGE_KEY = "personal-note";
 const MAX_CHARS = 360;
