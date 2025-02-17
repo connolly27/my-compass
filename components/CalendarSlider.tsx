@@ -81,50 +81,16 @@ const CalendarSlider = () => {
     setIsDragging(null);
   };
 
-  const handleTouchStart = (e: React.TouchEvent, type: SliderType) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    setIsDragging(type);
-    dragStartX.current = touch.clientX;
-    currentOffset.current = sliderOffsets[type];
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-
-    const config = sliderConfigs.find((c) => c.type === isDragging);
-    if (!config) return;
-
-    const maxDistance = getMaxDragDistance(config.width);
-    const deltaX = touch.clientX - dragStartX.current;
-    const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
-
-    setSliderOffsets((prev) => ({
-      ...prev,
-      [isDragging]: newOffset,
-    }));
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(null);
-  };
-
-  // Add and remove document-level event listeners
+  // Add and remove document-level event listeners for mouse events only
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
-      document.addEventListener("touchmove", handleTouchMove, { passive: false });
-      document.addEventListener("touchend", handleTouchEnd);
     }
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [isDragging]);
 
@@ -160,7 +126,7 @@ const CalendarSlider = () => {
           alt="Slider chassis"
           width={chassisWidth}
           height={chassisHeight}
-          className="w-full h-auto"
+          className="w-full h-full object-contain"
           priority
         />
       </div>
@@ -175,10 +141,33 @@ const CalendarSlider = () => {
             width: "750px",
             height: `${config.displayHeight}px`,
             transform: `translateX(calc(-50% + ${sliderOffsets[config.type]}px))`,
-            touchAction: "pan-x",
+            touchAction: "none",
           }}
           onMouseDown={(e) => handleMouseDown(e, config.type)}
-          onTouchStart={(e) => handleTouchStart(e, config.type)}
+          onTouchStart={(e) => {
+            const touch = e.touches[0];
+            setIsDragging(config.type);
+            dragStartX.current = touch.clientX;
+            currentOffset.current = sliderOffsets[config.type];
+          }}
+          onTouchMove={(e) => {
+            if (isDragging === config.type) {
+              const touch = e.touches[0];
+              const maxDistance = getMaxDragDistance(config.width);
+              const deltaX = touch.clientX - dragStartX.current;
+              const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
+
+              setSliderOffsets((prev) => ({
+                ...prev,
+                [config.type]: newOffset,
+              }));
+            }
+          }}
+          onTouchEnd={() => {
+            if (isDragging === config.type) {
+              setIsDragging(null);
+            }
+          }}
         >
           <Image
             src={`/images/slider${sliderConfigs.findIndex((c) => c.type === config.type) + 1}.png`}
@@ -201,7 +190,7 @@ const CalendarSlider = () => {
           alt="Slider diamonds"
           width={chassisWidth}
           height={chassisHeight}
-          className="w-full h-auto"
+          className="w-full h-full object-contain"
           priority
         />
       </div>

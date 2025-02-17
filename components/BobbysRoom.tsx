@@ -3,6 +3,7 @@ import CalendarSlider from "./CalendarSlider";
 import StuccoBackground from "./StuccoBackground";
 import ConstructionPaper from "./ConstructionPaper";
 import PriorityCardSection from "./PriorityCardSection";
+import NoteSection from "./NoteSection";
 
 const BobbysRoom: React.FC = () => {
   return (
@@ -34,6 +35,11 @@ const BobbysRoom: React.FC = () => {
                 <PriorityCardSection />
               </div>
             </ConstructionPaper>
+          </div>
+
+          {/* Note Section */}
+          <div className="col-span-full">
+            <NoteSection />
           </div>
         </div>
       </div>
