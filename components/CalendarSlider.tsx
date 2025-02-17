@@ -1,15 +1,30 @@
 import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 
+const STORAGE_KEY = "calendar-slider-positions";
+
+const defaultOffsets = {
+  weekday: 0,
+  month: 0,
+  day: 0,
+};
+
 const CalendarSlider = () => {
   type SliderType = "weekday" | "month" | "day";
 
   const [isDragging, setIsDragging] = useState<SliderType | null>(null);
-  const [sliderOffsets, setSliderOffsets] = useState<Record<SliderType, number>>({
-    weekday: 0,
-    month: 0,
-    day: 0,
-  });
+  const [sliderOffsets, setSliderOffsets] = useState(defaultOffsets);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load saved positions after hydration
+  useEffect(() => {
+    const savedPositions = localStorage.getItem(STORAGE_KEY);
+    if (savedPositions) {
+      setSliderOffsets(JSON.parse(savedPositions));
+    }
+    setIsHydrated(true);
+  }, []);
+
   const dragStartX = useRef(0);
   const currentOffset = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,20 +47,28 @@ const CalendarSlider = () => {
     sliderConfigs.map((config) => [config.type, { y: `${(config.y / chassisHeight) * 100}%` }])
   );
 
-  const handleStart = (clientX: number, type: SliderType) => {
+  // Save to localStorage whenever sliderOffsets change (but only after hydration)
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sliderOffsets));
+    }
+  }, [sliderOffsets, isHydrated]);
+
+  const handleMouseDown = (e: React.MouseEvent, type: SliderType) => {
+    e.preventDefault();
     setIsDragging(type);
-    dragStartX.current = clientX;
+    dragStartX.current = e.clientX;
     currentOffset.current = sliderOffsets[type];
   };
 
-  const handleMove = (clientX: number) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging) return;
 
     const config = sliderConfigs.find((c) => c.type === isDragging);
     if (!config) return;
 
     const maxDistance = getMaxDragDistance(config.width);
-    const deltaX = clientX - dragStartX.current;
+    const deltaX = e.clientX - dragStartX.current;
     const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
 
     setSliderOffsets((prev) => ({
@@ -54,62 +77,68 @@ const CalendarSlider = () => {
     }));
   };
 
-  const handleEnd = () => {
+  const handleMouseUp = () => {
     setIsDragging(null);
   };
 
-  // Mouse events
-  const handleMouseDown = (e: React.MouseEvent, type: SliderType) => {
-    e.preventDefault();
-    handleStart(e.clientX, type);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleMove(e.clientX);
-  };
-
-  // Touch events
   const handleTouchStart = (e: React.TouchEvent, type: SliderType) => {
+    e.preventDefault();
     const touch = e.touches[0];
-    handleStart(touch.clientX, type);
+    setIsDragging(type);
+    dragStartX.current = touch.clientX;
+    currentOffset.current = sliderOffsets[type];
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = (e: TouchEvent) => {
     if (!isDragging) return;
+    e.preventDefault();
     const touch = e.touches[0];
-    handleMove(touch.clientX);
+
+    const config = sliderConfigs.find((c) => c.type === isDragging);
+    if (!config) return;
+
+    const maxDistance = getMaxDragDistance(config.width);
+    const deltaX = touch.clientX - dragStartX.current;
+    const newOffset = Math.max(Math.min(currentOffset.current + deltaX, maxDistance), -maxDistance);
+
+    setSliderOffsets((prev) => ({
+      ...prev,
+      [isDragging]: newOffset,
+    }));
   };
 
+  const handleTouchEnd = () => {
+    setIsDragging(null);
+  };
+
+  // Add and remove document-level event listeners
   useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (isDragging) {
-        e.preventDefault();
-      }
-    };
-
-    const currentContainer = containerRef.current;
-    if (currentContainer) {
-      currentContainer.addEventListener("wheel", handleWheel, { passive: false });
-    }
-
     if (isDragging) {
-      document.addEventListener("mouseup", handleEnd);
-      document.addEventListener("mouseleave", handleEnd);
-      document.addEventListener("touchend", handleEnd);
-      document.addEventListener("touchcancel", handleEnd);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("touchmove", handleTouchMove, { passive: false });
+      document.addEventListener("touchend", handleTouchEnd);
     }
 
     return () => {
-      if (currentContainer) {
-        currentContainer.removeEventListener("wheel", handleWheel);
-      }
-      document.removeEventListener("mouseup", handleEnd);
-      document.removeEventListener("mouseleave", handleEnd);
-      document.removeEventListener("touchend", handleEnd);
-      document.removeEventListener("touchcancel", handleEnd);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [isDragging]);
+
+  if (!isHydrated) {
+    return (
+      <div
+        style={{
+          height: "470px",
+          width: "77px",
+          margin: "0 auto",
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -120,11 +149,12 @@ const CalendarSlider = () => {
         width: "77px",
         margin: "0 auto",
       }}
-      onMouseMove={handleMouseMove}
-      onTouchMove={handleTouchMove}
     >
       {/* Chassis */}
-      <div className="absolute left-1/2" style={{ width: "77px", transform: "translateX(-50%)" }}>
+      <div
+        className="absolute left-1/2 select-none pointer-events-none"
+        style={{ width: "77px", transform: "translateX(-50%)" }}
+      >
         <Image
           src="/images/chassis.png"
           alt="Slider chassis"
@@ -139,7 +169,7 @@ const CalendarSlider = () => {
       {sliderConfigs.map((config) => (
         <div
           key={config.type}
-          className="absolute left-1/2 cursor-grab active:cursor-grabbing touch-pan-x select-none"
+          className="absolute left-1/2 cursor-grab active:cursor-grabbing select-none"
           style={{
             top: sliderPositions[config.type].y,
             width: "750px",
@@ -162,13 +192,16 @@ const CalendarSlider = () => {
       ))}
 
       {/* Diamonds overlay */}
-      <div className="absolute left-1/2" style={{ width: "77px", transform: "translateX(-50%)" }}>
+      <div
+        className="absolute left-1/2 select-none pointer-events-none"
+        style={{ width: "77px", transform: "translateX(-50%)" }}
+      >
         <Image
           src="/images/diamonds.png"
           alt="Slider diamonds"
           width={chassisWidth}
           height={chassisHeight}
-          className="w-full h-auto pointer-events-none"
+          className="w-full h-auto"
           priority
         />
       </div>
