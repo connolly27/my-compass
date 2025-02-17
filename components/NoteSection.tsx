@@ -66,7 +66,9 @@ const NoteSection = () => {
           ${isMobile ? "min-h-[200px]" : ""}`}
         style={{ fontFamily: "Times New Roman, serif" }}
       />
-      <div className="text-sm text-slate-500 text-right">
+      <div
+        className={`text-sm text-right ${tempNote.length > MAX_CHARS ? "text-red-500 font-medium" : "text-slate-500"}`}
+      >
         {tempNote.length}/{MAX_CHARS} characters
       </div>
     </div>
@@ -74,12 +76,12 @@ const NoteSection = () => {
 
   return (
     <div className="col-span-full">
-      <ConstructionPaper color="#E8D8C3" className="min-h-[250px] md:min-h-[300px] p-6 pb-12">
-        <div className="max-w-2xl mx-auto pt-8">
+      <ConstructionPaper color="#E8D8C3" className="min-h-[250px] md:min-h-[300px] pb-12">
+        <div className="max-w-[90%] md:max-w-2xl mx-auto pt-8">
           <h3 className="text-4xl text-center text-slate-800 mt-12 mb-8">Keep a Note</h3>
 
           {note ? (
-            <Alert className="Alert mb-6">
+            <Alert className="Alert mb-6 max-w-[75%] mx-auto md:max-w-none">
               <AlertDescription>
                 <p className="font-['Crimson_Text'] text-lg leading-relaxed p-2">{note}</p>
               </AlertDescription>
@@ -100,7 +102,7 @@ const NoteSection = () => {
             <AlertDialogContent
               className={`
               AlertDialogContent
-              ${isMobile ? "w-full h-full max-w-none m-0 rounded-none" : "max-w-lg"}
+              ${isMobile ? "w-[90%] max-w-none m-4 rounded-lg" : "max-w-lg"}
             `}
             >
               <AlertDialogHeader>
@@ -110,9 +112,17 @@ const NoteSection = () => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               {dialogContent}
-              <AlertDialogFooter>
-                <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
+              <AlertDialogFooter className="space-y-2">
+                <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+                  <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleSave}
+                    disabled={tempNote.length > MAX_CHARS}
+                    className={tempNote.length > MAX_CHARS ? "opacity-50 cursor-not-allowed" : ""}
+                  >
+                    Save
+                  </AlertDialogAction>
+                </div>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
