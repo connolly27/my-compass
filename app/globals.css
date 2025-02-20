@@ -1,48 +1,71 @@
+/* Import Tailwind's base styles, components, and utilities */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Set default font family for the entire app */
 body {
   font-family: Schoolbell, Arial, Helvetica, sans-serif;
 }
 
+/* Define CSS variables for theming */
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light theme variables */
+    /* Each variable uses HSL format: Hue Saturation Lightness */
 
-    --card: 0 0% 100%;
+    /* Base colors for backgrounds and text */
+    --background: 210 40% 98%; /* Light blue-gray background */
+    --foreground: 222.2 84% 4.9%; /* Nearly black text color */
+
+    /* Card component colors */
+    --card: 0 0% 100%; /* Pure white cards */
     --card-foreground: 222.2 84% 4.9%;
 
+    /* Popover/dropdown colors */
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
+    /* Primary action colors (buttons, links) */
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
+    /* Secondary UI element colors */
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
+    /* Muted/subtle UI elements */
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
+    /* Accent colors for highlights */
     --accent: 210 40% 90%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
+    /* Destructive action colors (delete buttons, errors) */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
+    /* UI element borders and inputs */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    /* Border radius for rounded corners */
     --radius: 0.75rem;
   }
+
+  /* Dark theme overrides */
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Dark theme uses different HSL values for all variables */
+    --background: 0 0% 3.9%; /* Nearly black background */
+    --foreground: 0 0% 98%; /* Nearly white text */
+
+    /* Card colors (dark mode) */
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
+
+    /* Rest of dark theme variables... */
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
@@ -58,18 +81,23 @@ body {
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+
+    /* Chart colors for data visualization */
+    --chart-1: 220 70% 50%; /* Blue */
+    --chart-2: 160 60% 45%; /* Green */
+    --chart-3: 30 80% 55%; /* Orange */
+    --chart-4: 280 65% 60%; /* Purple */
+    --chart-5: 340 75% 55%; /* Red */
   }
 }
 
+/* Apply base styles to all elements */
 @layer base {
+  /* Set default border color for all elements */
   * {
     @apply border-border;
   }
+  /* Set default background and text color for body */
   body {
     @apply bg-background text-foreground;
   }
